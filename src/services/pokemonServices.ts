@@ -14,6 +14,9 @@ export async function fetchSomePokemon(limit: number, offset: number){
 }
 
 async function fetchPokemon(url: string){
+    // check to see if the pokemon exists
+    // if so, return the cached pokemon
+    // if not continue with below
     const r = await fetch(url)
     const data = await r.json()
     const pokemon: Pokemon = {
@@ -25,6 +28,8 @@ async function fetchPokemon(url: string){
         abilities: data["abilities"].map((obj: any)=>obj["ability"]["name"]),
         types: data["types"].map((obj: any)=>obj["type"]["name"]),
     }
+
+    // cache the pokemon
     return pokemon
 }
 
