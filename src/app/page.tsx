@@ -1,95 +1,108 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useEffect, useState } from "react";
+
+import { Pokemon } from "@/types/pokemon";
+
+import {
+    Box, 
+    TableContainer, 
+    Table,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select
+   } from "@mui/material";
+
+const limit = 20;
+const offset = 151;
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  const [data, setData] = useState<Pokemon[]>([]);
+  const [types, setTypes] = useState<string[]>(["all"]);
+  const [activeType, setActiveType] = useState<number>(0);
+
+  useEffect(()=>{
+    fetchPokemon()
+    fetch('api/types').then((r)=>r.json()).then((d)=>setTypes([...types, ...d]))
+  },[])
+
+  useEffect(()=>{
+    fetchPokemon()
+  },[activeType])
+
+
+  function fetchPokemon(){
+    if (activeType == 0){
+      fetch(`/api/pokemon?limit=${limit}&offset=${offset}`).
+      then((r)=>r.json()).
+      then((d)=>setData(d))
+    }
+    else {
+      fetch(`/api/pokemon?limit=${limit}&offset=${offset}&type=${types[activeType]}`).
+      then((r)=>r.json()).
+      then((d)=>setData(d))
+    }
+  }
+
+  const headers = [
+    "ID",
+    "Name",
+    "Image",
+    "Height",
+    "Weight",
+    "Abilities",
+    "Types"
+]
+
+  return (
+    <Box>
+      <FormControl fullWidth>
+        <InputLabel id="types-select-label">Types</InputLabel>
+        <Select
+          labelId="types-select-label"
+          id="types-select"
+          value={types[activeType]}
+          label="Types"
+          onChange={(e)=>setActiveType(types.indexOf(e.target.value.toString()))}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        {
+          types.map((type, i)=>
+            <MenuItem key={i} value={type}>{type}</MenuItem>
+          )
+        }
+        </Select>
+      </FormControl>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              {headers.map((header, i)=>
+              <TableCell key={i}>{header}</TableCell>
+              )}
+              
+            </TableRow>
+          </TableHead>
+          <TableBody>
+              {data.map((d: Pokemon, i)=>
+                <TableRow key={i}>
+                  <TableCell>{d.id}</TableCell>
+                  <TableCell sx={{textTransform: "capitalize"}}>{d.name}</TableCell>
+                  <TableCell><img src={d.imgUrl} style={{width: 50}}/></TableCell>
+                  <TableCell>{d.height / 10}m</TableCell>
+                  <TableCell>{d.weight / 10}kg</TableCell>
+                  <TableCell sx={{textTransform: "capitalize"}}>{d.abilities.join(", ")}</TableCell>
+                  <TableCell sx={{textTransform: "capitalize"}}>{d.types.join(", ")}</TableCell>
+                </TableRow>
+              )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
