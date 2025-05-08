@@ -1,5 +1,7 @@
 import { Pokemon } from "@/types/pokemon"
 
+import { getPokemonFromCache, setPokemonInCache } from "./pokemonCache"
+
 export async function fetchSomePokemon(limit: number, offset: number){
     const url = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
     const r = await fetch(url)
@@ -14,12 +16,16 @@ export async function fetchSomePokemon(limit: number, offset: number){
 }
 
 async function fetchPokemon(url: string){
-    // check to see if the pokemon exists
-    // if so, return the cached pokemon
-    // if not continue with below
+
+    let pokemon = getPokemonFromCache(url)
+    if (pokemon){
+        return pokemon
+    }
+
+    console.log(`Fetching: ${url}`)
     const r = await fetch(url)
     const data = await r.json()
-    const pokemon: Pokemon = {
+    pokemon = {
         id: data["id"],
         name: data["name"],
         imgUrl: data["sprites"]["other"]["official-artwork"]["front_default"],
@@ -29,7 +35,7 @@ async function fetchPokemon(url: string){
         types: data["types"].map((obj: any)=>obj["type"]["name"]),
     }
 
-    // cache the pokemon
+    setPokemonInCache(url, pokemon)
     return pokemon
 }
 

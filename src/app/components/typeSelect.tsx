@@ -2,8 +2,10 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 
-const limit = 20;
-const offset = 151;
+// TODO: Add number pickers for limit and offset
+// Make this dynamic.
+const limit = 151;
+const offset = 0;
 
 export default function TypeSelect(props: {setData: Function}){
 
