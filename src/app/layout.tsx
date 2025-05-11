@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Assignment 5-2",
-  description: "Does Dan even check this?????",
+  title: "Assignment 7-1",
+  description: "Use Context, WOOHOO!",
 };
 
 export default function RootLayout({
