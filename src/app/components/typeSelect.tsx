@@ -1,37 +1,26 @@
-import { Box, FormControl, InputLabel, Select, MenuItem, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+'use client'
 
+import { Box, FormControl, InputLabel, Select, MenuItem, TextField } from "@mui/material"
+import { useState, useEffect } from "react"
 
+import { usePokemonContext } from "@/app/contexts/pokemonContext"
 
-export default function TypeSelect(props: {setData: Function}){
+export default function TypeSelect(){
 
-    const [types, setTypes] = useState<string[]>(["all"]);
+    const { types, setPokeFilter } = usePokemonContext();
+    
     const [limit, setLimit] = useState<number>(20);
     const [offset, setOffset] = useState<number>(0);
     const [activeType, setActiveType] = useState<number>(0);
 
     useEffect(()=>{
-        fetchPokemon()
-        fetch('api/types').then((r)=>r.json()).then((d)=>setTypes([...types, ...d]))
-    },[])
-    
-    useEffect(()=>{
-        fetchPokemon()
-    },[activeType, limit, offset])
-    
-
-    function fetchPokemon(){
-        if (activeType == 0){
-          fetch(`/api/pokemon?limit=${limit}&offset=${offset}`).
-          then((r)=>r.json()).
-          then((d)=>props.setData(d))
-        }
-        else {
-          fetch(`/api/pokemon?limit=${limit}&offset=${offset}&type=${types[activeType]}`).
-          then((r)=>r.json()).
-          then((d)=>props.setData(d))
-        }
-      }
+        setPokeFilter({
+            activeType: activeType,
+            limit: limit,
+            offset: offset,
+            types: types
+        })
+    }, [activeType, limit, offset])
 
     return (
         <Box sx={{display: "flex", flexDirection: "row", width: "100%", m:2}}>

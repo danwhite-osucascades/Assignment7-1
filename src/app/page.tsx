@@ -9,12 +9,11 @@ import PokemonTable from "./components/pokemonTable";
 
 export default function Home() {
 
-  const [data, setData] = useState<Pokemon[]>([]);
 
   return (
     <Box>
-     <TypeSelect setData={setData} />
-     <PokemonTable data={data} />
+     <TypeSelect />
+     <PokemonTable />
     </Box>
   );
 }

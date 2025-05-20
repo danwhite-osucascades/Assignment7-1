@@ -1,8 +1,12 @@
 import { Pokemon } from "@/types/pokemon";
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 
+import { usePokemonContext } from "@/app/contexts/pokemonContext";
 
-export default function PokemonTable(props: {data: Pokemon[]}){
+export default function PokemonTable(){
+
+    const { pokemonArray } = usePokemonContext();
+
     const headers = [
         "ID",
         "Name",
@@ -24,7 +28,7 @@ export default function PokemonTable(props: {data: Pokemon[]}){
             </TableRow>
           </TableHead>
           <TableBody>
-              {props.data.map((d: Pokemon, i)=>
+              {pokemonArray.map((d: Pokemon, i)=>
                 <TableRow key={i}>
                   <TableCell>{d.id}</TableCell>
                   <TableCell sx={{textTransform: "capitalize"}}>{d.name}</TableCell>
