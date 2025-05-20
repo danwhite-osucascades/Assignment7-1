@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { PokemonProvider } from "@/app/contexts/pokemonContext";
+import NavBar from "./components/navBar";
 
 export const metadata: Metadata = {
   title: "Assignment 8-1",
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <PokemonProvider>
+          <header><NavBar /></header>
           <main>{children}</main>
         </PokemonProvider>
       </body>

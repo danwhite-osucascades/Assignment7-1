@@ -9,7 +9,9 @@ import { useEffect } from 'react';
 
 type PokemonContextType = {
     pokemonArray: Pokemon[];
+    favoritePokemonArray: Pokemon[];
     types: string[];
+    toggleFavoritePokemon: (pokemon: Pokemon) => void;
     setPokeFilter: (pokeFilter: PokeFilter) => void;
 };
 
@@ -17,6 +19,7 @@ const PokemonContext = createContext<PokemonContextType | undefined>(undefined);
 
 export const PokemonProvider = ({ children }: { children: ReactNode }) => {
     const [pokemonArray, setPokemonArray] = useState<Pokemon[]>([])
+    const [favoritePokemonArray, setFavoritePokemonArray] = useState<Pokemon[]>([])
     const [pokeFilter, setPokeFilter] = useState<PokeFilter>(
         {
             activeType: 0,
@@ -34,6 +37,19 @@ export const PokemonProvider = ({ children }: { children: ReactNode }) => {
     useEffect(()=>{
         fetchPokemon()
     }, [pokeFilter])
+
+    useEffect(()=>{
+        console.log(favoritePokemonArray)
+    }, [favoritePokemonArray])
+
+    function toggleFavoritePokemon(pokemon: Pokemon){
+        if (!favoritePokemonArray.find((obj: Pokemon)=>obj.id == pokemon.id)){
+            setFavoritePokemonArray([...favoritePokemonArray, pokemon])
+        }
+        else {
+            setFavoritePokemonArray(favoritePokemonArray.filter((obj)=>obj.id != pokemon.id))
+        }
+    }
     
     function fetchPokemon(){
         if (pokeFilter.activeType == 0){
@@ -50,9 +66,11 @@ export const PokemonProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <PokemonContext.Provider value={{ 
-            pokemonArray: pokemonArray, 
+            pokemonArray: pokemonArray,
+            favoritePokemonArray: favoritePokemonArray, 
             types: pokeFilter.types, 
-            setPokeFilter: setPokeFilter 
+            setPokeFilter: setPokeFilter,
+            toggleFavoritePokemon: toggleFavoritePokemon
         }}>
             {children}
         </PokemonContext.Provider>

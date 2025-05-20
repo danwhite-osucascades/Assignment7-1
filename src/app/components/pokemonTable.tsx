@@ -3,9 +3,12 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from
 
 import { usePokemonContext } from "@/app/contexts/pokemonContext";
 
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+
 export default function PokemonTable(){
 
-    const { pokemonArray } = usePokemonContext();
+    const { pokemonArray, favoritePokemonArray, toggleFavoritePokemon } = usePokemonContext();
 
     const headers = [
         "ID",
@@ -14,8 +17,10 @@ export default function PokemonTable(){
         "Height",
         "Weight",
         "Abilities",
-        "Types"
+        "Types",
+        "Favorite"
     ]
+    // TODO: Add a column for favorite and use a heart icon
     return (
         <TableContainer>
         <Table>
@@ -37,6 +42,13 @@ export default function PokemonTable(){
                   <TableCell>{d.weight / 10}kg</TableCell>
                   <TableCell sx={{textTransform: "capitalize"}}>{d.abilities.join(", ")}</TableCell>
                   <TableCell sx={{textTransform: "capitalize"}}>{d.types.join(", ")}</TableCell>
+                  <TableCell>
+                    {
+                      favoritePokemonArray.find((obj)=>obj.id == d.id) ?
+                      <FavoriteIcon onClick={()=>{toggleFavoritePokemon(d)}}style={{color: "red"}}/> :
+                      <FavoriteBorderIcon onClick={()=>{toggleFavoritePokemon(d)}}style={{color: "red"}}/>
+                    }
+                  </TableCell>
                 </TableRow>
               )}
           </TableBody>

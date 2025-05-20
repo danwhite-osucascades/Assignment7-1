@@ -12,8 +12,8 @@ export default function Home() {
 
   return (
     <Box>
-     <TypeSelect />
-     <PokemonTable />
+      <TypeSelect />
+      <PokemonTable />
     </Box>
   );
 }
