@@ -6,9 +6,9 @@ import { usePokemonContext } from "@/app/contexts/pokemonContext";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
-export default function PokemonTable(){
+export default function PokemonTable(props: {data: Pokemon[]}){
 
-    const { pokemonArray, favoritePokemonArray, toggleFavoritePokemon } = usePokemonContext();
+    const { favoritePokemonArray, toggleFavoritePokemon } = usePokemonContext();
 
     const headers = [
         "ID",
@@ -33,7 +33,7 @@ export default function PokemonTable(){
             </TableRow>
           </TableHead>
           <TableBody>
-              {pokemonArray.map((d: Pokemon, i)=>
+              {props.data.map((d: Pokemon, i)=>
                 <TableRow key={i}>
                   <TableCell>{d.id}</TableCell>
                   <TableCell sx={{textTransform: "capitalize"}}>{d.name}</TableCell>
