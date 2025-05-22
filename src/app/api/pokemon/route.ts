@@ -14,3 +14,9 @@ export async function GET(request: NextRequest) {
   }
   return Response.json(data)
 }
+
+export async function POST(request: NextRequest){
+ const body = await request.json()
+ console.log(body)
+ return Response.json({response: "POST REQUEST!!! YAY!"})
+}
