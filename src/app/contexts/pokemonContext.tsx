@@ -31,7 +31,8 @@ export const PokemonProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(()=>{
         fetchPokemon()
-        fetch('api/types').then((r) => r.json()).then((d: string[]) => setPokeFilter((prev) => ({ ...prev, types: [...prev.types, ...d] })))    
+        fetch('api/types').then((r) => r.json()).then((d: string[]) => setPokeFilter((prev) => ({ ...prev, types: [...prev.types, ...d] }))) 
+        fetch('api/favorite').then((r) => r.json()).then((data) => setFavoritePokemonArray(data.pokemon))  
     },[])
 
     useEffect(()=>{
@@ -44,10 +45,20 @@ export const PokemonProvider = ({ children }: { children: ReactNode }) => {
 
     function toggleFavoritePokemon(pokemon: Pokemon){
         if (!favoritePokemonArray.find((obj: Pokemon)=>obj.id == pokemon.id)){
-            setFavoritePokemonArray([...favoritePokemonArray, pokemon])
+            fetch("api/favorite", {
+                method: "POST",
+                body: JSON.stringify({pokemon: pokemon})
+            })
+            .then((r)=>r.json())
+            .then((data)=>setFavoritePokemonArray(data.pokemon))
         }
         else {
-            setFavoritePokemonArray(favoritePokemonArray.filter((obj)=>obj.id != pokemon.id))
+            fetch("api/favorite", {
+                method: "DELETE",
+                body: JSON.stringify({id: pokemon.id})
+            })
+            .then((r)=>r.json())
+            .then((data)=>setFavoritePokemonArray(data.pokemon))
         }
     }
     
